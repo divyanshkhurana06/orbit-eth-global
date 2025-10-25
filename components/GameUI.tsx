@@ -1,22 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function GameUI() {
+interface GameUIProps {
+  socket: any;
+  roomCode: string;
+}
+
+export default function GameUI({ socket, roomCode }: GameUIProps) {
   const [selectedEmoji, setSelectedEmoji] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<Array<{ user: string; emoji: string; time: number }>>([]);
 
   const emojis = ['👍', '😂', '🔥', '💪', '😎', '🎉', '😢', '😱'];
 
+  useEffect(() => {
+    if (!socket) return;
+
+    // Listen for opponent emojis
+    socket.on('emoji-received', (data: { emoji: string; username: string }) => {
+      setChatMessages(prev => [...prev, { 
+        user: data.username, 
+        emoji: data.emoji, 
+        time: Date.now() 
+      }]);
+    });
+
+    return () => {
+      socket.off('emoji-received');
+    };
+  }, [socket]);
+
   const sendEmoji = (emoji: string) => {
     setSelectedEmoji(emoji);
     setChatMessages([...chatMessages, { user: 'You', emoji, time: Date.now() }]);
     
-    // Simulate opponent response
-    setTimeout(() => {
-      const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-      setChatMessages(prev => [...prev, { user: 'Opponent', emoji: randomEmoji, time: Date.now() }]);
-    }, 1000);
+    // Send to opponent via socket
+    socket.emit('send-emoji', { roomCode, emoji, username: 'You' });
 
     setTimeout(() => setSelectedEmoji(null), 2000);
   };
