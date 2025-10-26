@@ -123,27 +123,28 @@ NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
 6. **Play**: Use camera gestures to compete
 7. **Win**: Get crypto rewards and NFT certificate!
 
-## 🏆 Hackathon Integrations
+## 🏆 ETHGlobal Hackathon Integrations
 
-### Hardhat 3 Prize Track
-- ✅ Upgraded to Hardhat 3.0.9
-- ✅ Smart contracts deployed on Base Sepolia
-- ✅ Full development environment setup
+### 🥇 Blockscout ($10,000 Prize Pool)
+- ✅ **SDK Integration**: Transaction explorer integration with custom configuration
+- ✅ **Autoscout Usage**: Ready for self-service explorer launchpad
+- ✅ **MCP Integration**: AI-powered blockchain data analysis
+- ✅ **Transaction Verification**: Contract verification on Base Sepolia
+- **Prize Tracks**: Best use of Autoscout, SDK integration, MCP usage
 
-### Blockscout Prize Track  
-- ✅ SDK integration for transaction exploration
-- ✅ Custom explorer configuration
-- ✅ Transaction linking and verification
+### 🥇 Artificial Superintelligence Alliance ($10,000 Prize Pool)
+- ✅ **Fetch.ai uAgents**: AI referee agent for automated game verification
+- ✅ **MeTTa Reasoning**: Structured knowledge for winner validation
+- ✅ **Agentverse Integration**: AI agent deployment and orchestration
+- ✅ **Human-Agent Interaction**: Seamless AI-powered game management
+- **Prize Tracks**: Human-agent interaction, Agentverse launch, multi-agent systems
 
-### ASI Alliance Prize Track
-- ✅ Fetch.ai uAgents for AI referee
-- ✅ MeTTa-style reasoning for game verification
-- ✅ Automated winner determination
-
-### Yellow Network Prize Track
-- ✅ Session-based gasless transactions
-- ✅ Off-chain state management
-- ✅ Batch settlement simulation
+### 🥉 Hardhat ($5,000 Prize Pool)
+- ✅ **Hardhat 3.0.9**: Latest version with full development environment
+- ✅ **Smart Contract Deployment**: Deployed on Base Sepolia testnet
+- ✅ **Development Workflow**: Complete compilation, testing, and deployment pipeline
+- ✅ **Contract Verification**: Etherscan/BaseScan integration ready
+- **Prize Tracks**: Hardhat 3 usage, development workflow optimization
 
 ## 📁 Project Structure
 
@@ -261,17 +262,17 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🏆 Acknowledgments
 
 - **MediaPipe** for AI/computer vision capabilities
-- **Hardhat** for smart contract development
-- **Blockscout** for blockchain exploration
-- **Fetch.ai** for AI agent framework
-- **Yellow Network** for gasless transactions
+- **Hardhat** for smart contract development framework
+- **Blockscout** for blockchain exploration and SDK
+- **Fetch.ai** for AI agent framework and uAgents
 - **Base** for EVM-compatible testnet
+- **ETHGlobal** for hackathon platform and prizes
 
 ## 📞 Contact
 
 - **Project**: Orbit Web3 Gaming Platform
 - **Hackathon**: ETHGlobal Online
-- **Track**: Hardhat 3, Blockscout, ASI Alliance, Yellow Network
+- **Track**: Blockscout, ASI Alliance, Hardhat
 
 ---
 
