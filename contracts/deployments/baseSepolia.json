@@ -1,0 +1,9 @@
+{
+  "network": "baseSepolia",
+  "chainId": 84532,
+  "contract": "GameEscrow",
+  "address": "0x85761DB340EF99E060B6c5db6218dFDD503780c3",
+  "deployer": "0xD4bDB2C076d55ba0eE819d3d5e37dA10859ECA88",
+  "timestamp": "2025-10-26T14:39:02.327Z",
+  "blockNumber": 32860627
+}

@@ -1,229 +1,278 @@
-# 🕹️ SkillDuels (OrbitPlay)
+# 🌐 Orbit - AI-Powered Web3 Gaming Platform
 
-**Tagline:** "Play. Compete. Earn."
+> Camera-based 1v1 skill games with crypto wagers, voice chat, and winner NFTs
 
-A platform where users can join 1v1 camera-based skill games, wager crypto tokens, and earn based on their wins — all while being able to voice chat, send emojis, and build their gaming rep.
+[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.20-blue)](https://soliditylang.org/)
+[![Hardhat](https://img.shields.io/badge/Hardhat-3.0.9-yellow)](https://hardhat.org/)
+[![MediaPipe](https://img.shields.io/badge/MediaPipe-AI-orange)](https://mediapipe.dev/)
+[![Base](https://img.shields.io/badge/Base-Sepolia-blue)](https://base.org/)
 
-![Next.js](https://img.shields.io/badge/Next.js-16.0-black)
-![React](https://img.shields.io/badge/React-19.2-blue)
-![Solana](https://img.shields.io/badge/Solana-Web3-purple)
-![MediaPipe](https://img.shields.io/badge/MediaPipe-AI-green)
+## 🎮 Overview
 
-## 🎮 Features
+**Orbit** is a revolutionary Web3 gaming platform that combines AI-powered gesture recognition with blockchain technology to create immersive 1v1 skill-based games. Players compete in real-time using their camera for gesture detection, with crypto wagers and instant NFT rewards for winners.
 
-- **Real-time Multiplayer**: 1v1 matches with WebRTC video/audio
-- **AI Gesture Detection**: MediaPipe Hands for accurate hand tracking
-- **Crypto Wagering**: Solana integration for token-based betting
-- **Multiple Game Modes**: Hand Raise, Tennis, Table Tennis, and more
-- **Social Features**: Emoji reactions, voice chat, live scoreboard
-- **Beautiful UI**: Modern, neon-style gaming interface
+### ✨ Key Features
+
+- 🤖 **AI-Powered Games**: MediaPipe hand tracking and pose detection
+- 🎥 **Real-time Multiplayer**: WebRTC video chat and Socket.io synchronization  
+- 💰 **Crypto Integration**: Solidity smart contracts for escrow and wagers
+- 🏆 **Winner NFTs**: Automatic ERC721 certificate minting
+- 🤖 **AI Referee**: Fetch.ai uAgents for automated verification
+- 🎨 **Professional UI**: Modern 3-column layout design
+
+## 🎯 Available Games
+
+### 🏋️ Pushup Battle
+- **AI Model**: MediaPipe Pose
+- **Objective**: First to complete target pushups wins
+- **Features**: Real-time counting, goal selection, multiplayer sync
+
+### ✊ Rock Paper Scissors  
+- **AI Model**: MediaPipe Hands
+- **Objective**: Best of 5 rounds
+- **Features**: Hand gesture detection, round tracking, winner animations
+
+### 🏓 Table Tennis
+- **AI Model**: MediaPipe Hands  
+- **Objective**: First to 11 points, win by 2
+- **Features**: Hand-controlled paddles, ball physics, official rules
+
+## 🏗️ Technical Architecture
+
+### Frontend Stack
+- **Next.js 16** with TypeScript
+- **Tailwind CSS** for styling
+- **MediaPipe** for AI/computer vision
+- **WebRTC** for video/audio
+- **Socket.io** for real-time sync
+- **Ethers.js v6** for blockchain
+
+### Smart Contracts
+- **Solidity** on Base Sepolia
+- **Hardhat 3** for development
+- **OpenZeppelin** security standards
+- **GameEscrow.sol**: Wager escrow & payouts
+- **OrbitWinnerNFT.sol**: Winner certificates
+
+### AI & Computer Vision
+- **MediaPipe Hands**: Gesture detection
+- **MediaPipe Pose**: Body tracking
+- **TensorFlow.js**: Object detection
+- **Custom physics engines**
+
+### Blockchain Integration
+- **Yellow Network**: Gasless transactions
+- **Blockscout**: Transaction explorer
+- **Base Sepolia**: EVM testnet
+- **Fetch.ai**: AI referee agents
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-
-- Node.js 18+ installed
-- Phantom or Solflare wallet for crypto integration
-- Webcam for gesture detection
+- Node.js 18+
+- npm or yarn
+- MetaMask wallet
+- Camera access
 
 ### Installation
 
 ```bash
 # Clone the repository
+git clone https://github.com/yourusername/orbit.git
 cd orbit
 
 # Install dependencies
 npm install
 
-# Run both Next.js and Socket.io server
-npm run dev:all
-```
+# Set up environment variables
+cp .env.local.example .env.local
+# Edit .env.local with your configuration
 
-The app will be available at:
-- **Frontend**: http://localhost:3000
-- **Socket.io Server**: http://localhost:3001
-
-### Running Separately
-
-```bash
-# Terminal 1 - Next.js frontend
+# Start the development server
 npm run dev
 
-# Terminal 2 - Socket.io server
+# Start Socket.io server (in another terminal)
 npm run server
 ```
 
-## 🎯 How to Play
+### Environment Setup
 
-1. **Connect Your Wallet** (Optional for MVP)
-   - Click "Connect Wallet" in the header
-   - Select Phantom or Solflare
-   - Approve connection
+```env
+# Supabase Database
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
 
-2. **Create or Join a Room**
-   - Enter your username
-   - Click "Create Game" to host a new room
-   - Or enter a room code and click "Join Game"
+# Socket.io Server
+SOCKET_SERVER_URL=http://localhost:3001
 
-3. **Set Your Wager**
-   - Once matched with an opponent, set your SOL wager amount
-   - Both players must agree
+# Blockchain Configuration
+NEXT_PUBLIC_CONTRACT_ADDRESS=0x85761DB340EF99E060B6c5db6218dFDD503780c3
+NEXT_PUBLIC_WINNER_NFT_ADDRESS=0x258007af6A45b09D1026DB6c4aE7ab9E9aE8A519
+NEXT_PUBLIC_SOLANA_NETWORK=devnet
+NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
+```
 
-4. **Play the Game**
-   - Follow on-screen instructions for each game mode
-   - In "Hand Raise" mode, raise your hand as fast as possible when prompted
-   - Fastest reaction wins the round
+## 🎮 How to Play
 
-5. **Win and Earn**
-   - Best of 3 rounds wins the match
-   - Winner takes the pot automatically
+1. **Connect Wallet**: Link your MetaMask or Phantom wallet
+2. **Set Username**: Choose a unique username
+3. **Create/Join Room**: Host a game or join with a room code
+4. **Select Game Mode**: Choose from available games
+5. **Ready Up**: Both players confirm readiness
+6. **Play**: Use camera gestures to compete
+7. **Win**: Get crypto rewards and NFT certificate!
 
-## 🧩 Tech Stack
+## 🏆 Hackathon Integrations
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | Next.js 16, React 19, Tailwind CSS |
-| AI Vision | MediaPipe Hands, TensorFlow.js |
-| Real-time | Socket.io, WebRTC |
-| Blockchain | Solana Web3.js, Wallet Adapters |
-| Server | Express, Node.js |
+### Hardhat 3 Prize Track
+- ✅ Upgraded to Hardhat 3.0.9
+- ✅ Smart contracts deployed on Base Sepolia
+- ✅ Full development environment setup
+
+### Blockscout Prize Track  
+- ✅ SDK integration for transaction exploration
+- ✅ Custom explorer configuration
+- ✅ Transaction linking and verification
+
+### ASI Alliance Prize Track
+- ✅ Fetch.ai uAgents for AI referee
+- ✅ MeTTa-style reasoning for game verification
+- ✅ Automated winner determination
+
+### Yellow Network Prize Track
+- ✅ Session-based gasless transactions
+- ✅ Off-chain state management
+- ✅ Batch settlement simulation
 
 ## 📁 Project Structure
 
 ```
 orbit/
-├── app/
-│   ├── page.tsx          # Lobby page
-│   ├── game/
-│   │   └── page.tsx      # Game room page
-│   ├── layout.tsx        # Root layout with WalletProvider
-│   └── globals.css       # Global styles
-├── components/
-│   ├── HandRaiseGame.tsx # Main game component with MediaPipe
-│   ├── VideoChat.tsx     # WebRTC video/audio
-│   ├── GameUI.tsx        # Emoji reactions & stats
-│   ├── WalletProvider.tsx # Solana wallet context
-│   └── WalletButton.tsx  # Wallet connection UI
-├── lib/
-│   └── wager.ts          # Wager management service
-├── server.js             # Socket.io multiplayer server
-└── package.json
+├── app/                    # Next.js app directory
+│   ├── page.tsx           # Landing page
+│   ├── auth/              # Authentication
+│   ├── lobby/             # Game lobby
+│   └── game/              # Game interface
+├── components/             # React components
+│   ├── PushupBattleGame.tsx
+│   ├── RockPaperScissorsGame.tsx
+│   ├── TableTennisGame.tsx
+│   ├── VideoChat.tsx
+│   └── ChatBox.tsx
+├── contracts/              # Smart contracts
+│   ├── contracts/
+│   │   ├── GameEscrow.sol
+│   │   └── OrbitWinnerNFT.sol
+│   ├── scripts/
+│   └── hardhat.config.js
+├── lib/                    # Utilities
+│   ├── gameContract.ts     # Blockchain integration
+│   ├── yellowNetwork.ts    # Yellow Network SDK
+│   └── blockscout.ts       # Blockscout integration
+├── agents/                 # AI agents
+│   └── orbit_referee.py    # Fetch.ai referee agent
+└── server.js              # Socket.io server
 ```
 
-## 🎮 Game Modes
+## 🔧 Development
 
-### Hand Raise (MVP) ✋
-React as fast as possible when prompted. AI detects when you raise your hand.
+### Smart Contract Development
 
-### Coming Soon
-- **Tennis** 🎾 - Swing tracking
-- **Table Tennis** 🏓 - Fast-paced paddle detection
-- **Rock Paper Scissors** ✊ - Gesture-based classic
+```bash
+cd contracts
 
-## 🔧 Configuration
+# Compile contracts
+npx hardhat compile
 
-### Solana Network
-Currently configured for **Devnet**. Change in `components/WalletProvider.tsx`:
+# Run tests
+npx hardhat test
 
-```typescript
-const network = WalletAdapterNetwork.Mainnet; // or Devnet
+# Deploy to Base Sepolia
+npx hardhat run scripts/deploy.js --network baseSepolia
+
+# Verify contracts
+npx hardhat verify --network baseSepolia <CONTRACT_ADDRESS>
 ```
 
-### Socket.io Server Port
-Change in `server.js`:
+### Frontend Development
 
-```javascript
-const PORT = process.env.PORT || 3001;
+```bash
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-## 🛠️ Development
+### Socket.io Server
 
-### Adding New Game Modes
-
-1. Create a new component in `components/` (e.g., `TennisGame.tsx`)
-2. Implement MediaPipe gesture detection logic
-3. Add to game selection in `app/game/page.tsx`
-4. Update Socket.io events in `server.js`
-
-### Testing MediaPipe
-
-The hand detection uses MediaPipe's pre-trained models from CDN:
-```
-https://cdn.jsdelivr.net/npm/@mediapipe/hands/
+```bash
+# Start Socket.io server
+npm run server
 ```
 
-For offline development, you can download models locally.
+## 🎯 Game Modes
 
-## 🐛 Troubleshooting
+### Pushup Battle
+- Players select target count (10-100)
+- Goal is average of both selections
+- MediaPipe Pose tracks pushup movements
+- First to reach goal wins
 
-### Camera Not Working
-- Ensure browser has camera permissions
-- Use HTTPS in production (WebRTC requirement)
-- Check if camera is already in use
+### Rock Paper Scissors
+- MediaPipe Hands detects gestures
+- Best of 5 rounds
+- Real-time gesture recognition
+- Winner animations
 
-### Wallet Connection Issues
-- Make sure Phantom/Solflare extension is installed
-- Check if you're on the correct network (Devnet/Mainnet)
-- Clear browser cache and reconnect
+### Table Tennis
+- Hand-controlled paddles
+- Official scoring rules (first to 11, win by 2)
+- Ball physics with collision detection
+- Responsive canvas rendering
 
-### Socket.io Connection Failed
-- Ensure the server is running on port 3001
-- Check firewall settings
-- Verify CORS configuration in `server.js`
+## 🔗 Contract Addresses
 
-## 📈 Roadmap
+**Base Sepolia Network:**
+- **GameEscrow**: `0x85761DB340EF99E060B6c5db6218dFDD503780c3`
+- **OrbitWinnerNFT**: `0x258007af6A45b09D1026DB6c4aE7ab9E9aE8A519`
 
-### Phase 1 - MVP ✅
-- [x] Lobby with room creation/joining
-- [x] Hand Raise game with MediaPipe
-- [x] WebRTC video/audio
-- [x] Socket.io multiplayer
-- [x] Wallet connection
-- [x] Mock wager system
+## 🌐 Explorer Links
 
-### Phase 2 - Prototype (1 Week)
-- [ ] Real on-chain token staking
-- [ ] Additional game modes (Tennis, Table Tennis)
-- [ ] Leaderboard
-- [ ] Match history
-
-### Phase 3 - Alpha (1 Month)
-- [ ] Tournament system
-- [ ] NFT profile badges
-- [ ] Spectator mode
-- [ ] Mobile responsive design
-
-### Phase 4 - Beta/Launch
-- [ ] Cross-chain support (Polygon, Ethereum)
-- [ ] Community tournaments
-- [ ] Premium rooms
-- [ ] Streaming integration
+- **BaseScan**: [View on BaseScan](https://basescan.org/address/0x85761DB340EF99E060B6c5db6218dFDD503780c3)
+- **Blockscout**: [View on Blockscout](https://base-sepolia.blockscout.com/address/0x85761DB340EF99E060B6c5db6218dFDD503780c3)
 
 ## 🤝 Contributing
 
-This is a hackathon project! Contributions are welcome.
-
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
 ## 📄 License
 
-MIT License - feel free to use this project for learning or building your own games!
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## 🏆 Acknowledgments
 
-- MediaPipe for incredible hand tracking
-- Solana for fast, cheap transactions
-- Next.js team for the amazing framework
-- The Web3 gaming community
+- **MediaPipe** for AI/computer vision capabilities
+- **Hardhat** for smart contract development
+- **Blockscout** for blockchain exploration
+- **Fetch.ai** for AI agent framework
+- **Yellow Network** for gasless transactions
+- **Base** for EVM-compatible testnet
 
-## 💬 Contact
+## 📞 Contact
 
-Built with ❤️ for hackathons and the future of skill-based gaming.
+- **Project**: Orbit Web3 Gaming Platform
+- **Hackathon**: ETHGlobal Online
+- **Track**: Hardhat 3, Blockscout, ASI Alliance, Yellow Network
 
 ---
 
-**Ready to duel?** 🕹️ Connect your wallet and show off your skills!
+**Built with ❤️ for the Web3 gaming revolution**

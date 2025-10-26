@@ -101,6 +101,37 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Games Showcase */}
+      <section className="py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl md:text-5xl font-bold mb-4">Choose Your Game</h3>
+            <p className="text-xl text-slate-400">Three epic games powered by AI hand tracking</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { icon: '💪', title: 'Pushup Battle', desc: 'Real fitness challenge with AI pose detection', difficulty: 'Hard' },
+              { icon: '✊', title: 'Rock Paper Scissors', desc: 'Best of 5 rounds with hand gestures', difficulty: 'Easy' },
+              { icon: '🏓', title: 'Table Tennis', desc: 'Control paddles with your hands', difficulty: 'Medium' }
+            ].map((game, i) => (
+              <div key={i} className="group p-8 bg-slate-800/50 border border-slate-700 hover:border-cyan-500 rounded-2xl transition cursor-pointer transform hover:scale-105">
+                <div className="text-6xl mb-4 group-hover:scale-110 transition">{game.icon}</div>
+                <h4 className="text-2xl font-bold mb-2">{game.title}</h4>
+                <p className="text-slate-400 mb-4">{game.desc}</p>
+                <span className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${
+                  game.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400' :
+                  game.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
+                  'bg-red-500/20 text-red-400'
+                }`}>
+                  {game.difficulty}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section id="features" className="py-20 px-6 bg-slate-900/50">
         <div className="max-w-7xl mx-auto">

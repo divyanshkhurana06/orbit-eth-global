@@ -27,6 +27,7 @@
     "@types/express": "^5.0.4",
     "@types/three": "^0.180.0",
     "cors": "^2.8.5",
+    "ethers": "^6.15.0",
     "express": "^5.1.0",
     "next": "16.0.0",
     "react": "19.2.0",

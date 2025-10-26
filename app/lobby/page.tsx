@@ -208,31 +208,42 @@ export default function Lobby() {
         <div className="mb-12">
           <h3 className="text-2xl font-bold mb-6">Available Game Modes</h3>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="group bg-slate-800/50 border border-slate-700 hover:border-blue-500 rounded-xl p-6 transition cursor-pointer">
-              <div className="text-4xl mb-4 group-hover:scale-110 transition">🔍</div>
-              <h4 className="text-xl font-bold mb-2">Object Hunt</h4>
-              <p className="text-sm text-slate-400 mb-4">Race to find and show items to your camera</p>
+            <div className="group bg-slate-800/50 border border-slate-700 hover:border-cyan-500 rounded-xl p-6 transition cursor-pointer transform hover:scale-105">
+              <div className="text-5xl mb-4 group-hover:scale-110 transition">💪</div>
+              <h4 className="text-xl font-bold mb-2">Pushup Battle</h4>
+              <p className="text-sm text-slate-400 mb-4">Real fitness challenge with AI pose detection</p>
               <div className="flex items-center gap-2">
-                <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">Easy</span>
-                <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">2-5 min</span>
+                <span className="px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded-full font-bold">Hard</span>
+                <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">5-10 min</span>
+              </div>
+              <div className="mt-3 text-xs text-slate-500">
+                • Choose pushup goal (10-100)
               </div>
             </div>
 
-            <div className="group bg-slate-800/30 border border-slate-700 rounded-xl p-6 opacity-60">
-              <div className="text-4xl mb-4">⚡</div>
-              <h4 className="text-xl font-bold mb-2">Reflex Challenge</h4>
-              <p className="text-sm text-slate-400 mb-4">Test your reaction speed</p>
+            <div className="group bg-slate-800/50 border border-slate-700 hover:border-cyan-500 rounded-xl p-6 transition cursor-pointer transform hover:scale-105">
+              <div className="text-5xl mb-4 group-hover:scale-110 transition">✊</div>
+              <h4 className="text-xl font-bold mb-2">Rock Paper Scissors</h4>
+              <p className="text-sm text-slate-400 mb-4">Best of 5 rounds with hand gestures</p>
               <div className="flex items-center gap-2">
-                <span className="px-2 py-1 bg-slate-700 text-slate-400 text-xs rounded-full">Coming Soon</span>
+                <span className="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full font-bold">Easy</span>
+                <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">2-3 min</span>
+              </div>
+              <div className="mt-3 text-xs text-slate-500">
+                • Classic rules with AI detection
               </div>
             </div>
 
-            <div className="group bg-slate-800/30 border border-slate-700 rounded-xl p-6 opacity-60">
-              <div className="text-4xl mb-4">🧠</div>
-              <h4 className="text-xl font-bold mb-2">Memory Match</h4>
-              <p className="text-sm text-slate-400 mb-4">Remember and match sequences</p>
+            <div className="group bg-slate-800/50 border border-slate-700 hover:border-cyan-500 rounded-xl p-6 transition cursor-pointer transform hover:scale-105">
+              <div className="text-5xl mb-4 group-hover:scale-110 transition">🏓</div>
+              <h4 className="text-xl font-bold mb-2">Table Tennis</h4>
+              <p className="text-sm text-slate-400 mb-4">Control paddles with your hands</p>
               <div className="flex items-center gap-2">
-                <span className="px-2 py-1 bg-slate-700 text-slate-400 text-xs rounded-full">Coming Soon</span>
+                <span className="px-3 py-1 bg-yellow-500/20 text-yellow-400 text-xs rounded-full font-bold">Medium</span>
+                <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">3-5 min</span>
+              </div>
+              <div className="mt-3 text-xs text-slate-500">
+                • First to 11 wins (win by 2)
               </div>
             </div>
           </div>

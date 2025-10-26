@@ -9,17 +9,13 @@ import RockPaperScissorsGame from '@/components/RockPaperScissorsGame';
 import VideoChat from '@/components/VideoChat';
 import ChatBox from '@/components/ChatBox';
 import { MouseMoveEffect } from '@/components/MouseMoveEffect';
+import { gameContract } from '@/lib/gameContract';
 
 // Dynamic imports for games using MediaPipe (client-side only)
 
 const TableTennisGame = dynamic(() => import('@/components/TableTennisGame'), {
   ssr: false,
   loading: () => <div className="text-center p-8">Loading Table Tennis...</div>
-});
-
-const TennisGame = dynamic(() => import('@/components/TennisGame'), {
-  ssr: false,
-  loading: () => <div className="text-center p-8">Loading Tennis...</div>
 });
 
 const PushupBattleGame = dynamic(() => import('@/components/PushupBattleGame'), {
@@ -42,49 +38,35 @@ const PushupBattleGame = dynamic(() => import('@/components/PushupBattleGame'), 
         'First to reach the goal wins!'
       ]
     },
-  {
-    id: 'rock-paper-scissors',
-    name: 'Rock Paper Scissors',
-    description: 'Classic game with hand gesture detection',
-    icon: '✊',
-    difficulty: 'Medium',
-    rules: [
-      '✊ Rock beats Scissors',
-      '✋ Paper beats Rock',
-      '✌️ Scissors beats Paper',
-      'Show your gesture clearly',
-      'First to lock in wins ties'
-    ]
-  },
-  {
-    id: 'table-tennis',
-    name: 'Table Tennis',
-    description: 'Control paddle with hand movement, hit the ball!',
-    icon: '🏓',
-    difficulty: 'Medium',
-    rules: [
-      'Move hand left/right to control paddle',
-      'Hit the ball back to opponent',
-      'Ball speeds up with each hit',
-      'First to 5 points wins',
-      'Missing the ball gives opponent a point'
-    ]
-  },
-  {
-    id: 'tennis',
-    name: 'Tennis',
-    description: 'Swing your hand to hit tennis balls',
-    icon: '🎾',
-    difficulty: 'Hard',
-    rules: [
-      'Move hand to position racket',
-      'Swing down fast for power hits',
-      'Ball has gravity and bounce',
-      'First to 3 points wins',
-      'Let ball bounce once before hitting'
-    ]
-  }
-];
+    {
+      id: 'rock-paper-scissors',
+      name: 'Rock Paper Scissors',
+      description: 'Classic game with hand gesture detection',
+      icon: '✊',
+      difficulty: 'Medium',
+      rules: [
+        '✊ Rock beats Scissors',
+        '✋ Paper beats Rock',
+        '✌️ Scissors beats Paper',
+        'Show your gesture clearly',
+        'Best of 5 rounds wins!'
+      ]
+    },
+    {
+      id: 'table-tennis',
+      name: 'Table Tennis',
+      description: 'Control paddle with hand movement, hit the ball!',
+      icon: '🏓',
+      difficulty: 'Medium',
+      rules: [
+        'Move hand left/right to control paddle',
+        'Hit the ball back to opponent',
+        'Score when opponent misses',
+        'First to 11 wins (win by 2)',
+        'Deuce at 10-10!'
+      ]
+    }
+  ];
 
 function GameContent() {
   const searchParams = useSearchParams();
@@ -302,11 +284,12 @@ function GameContent() {
     }
   }, [setupCountdown, socket, roomCode, selectedGameMode]);
 
-  const handleGameEnd = (winner: 'player' | 'opponent', myTime: number, opponentTime: number) => {
+  const handleGameEnd = async (winner: 'player' | 'opponent', myTime: number, opponentTime: number) => {
     if (!socket) return;
 
     const winnerId = winner === 'player' ? socket.id : null;
     
+    // Emit socket event for immediate UI update
     socket.emit('round-winner', { 
       roomCode, 
       winnerId,
@@ -315,6 +298,47 @@ function GameContent() {
         opponent: opponentTime
       }
     });
+
+    // Complete game on blockchain and mint NFT
+    try {
+      console.log('🏆 Game ended! Completing on blockchain...');
+      
+      // Get player addresses (you'll need to get these from wallet connection)
+      const playerAddress = await gameContract.getAddress();
+      if (!playerAddress) {
+        console.warn('⚠️ No wallet connected, skipping blockchain completion');
+        return;
+      }
+
+      // For demo purposes, we'll use a mock game ID and opponent address
+      // In production, these would come from the actual game session
+      const gameId = Date.now().toString(); // Mock game ID
+      const opponentAddress = "0x0000000000000000000000000000000000000000"; // Mock opponent
+      
+      const result = await gameContract.completeGame(
+        gameId,
+        winner,
+        playerAddress,
+        opponentAddress,
+        selectedGameMode || 'pushup-battle',
+        { player: myTime, opponent: opponentTime }
+      );
+
+      if (result.success) {
+        console.log('🎉 Game completed on blockchain!');
+        console.log('📝 Transaction:', result.txHash);
+        console.log('🏆 NFT Token ID:', result.nftTokenId);
+        
+        // Show success notification
+        alert(`🏆 You won! NFT system ready!\n\n✅ Game completed successfully\n✅ Smart contract integration working\n✅ NFT contract deployed and ready\n✅ AI referee can mint NFT\n\nIn production: Winner gets NFT automatically!`);
+      } else {
+        console.error('❌ Failed to complete game on blockchain:', result.error);
+        alert('⚠️ Game completed locally but failed on blockchain. Check console for details.');
+      }
+    } catch (error) {
+      console.error('❌ Error completing game:', error);
+      alert('⚠️ Game completed locally but blockchain integration failed.');
+    }
   };
 
   if (!roomCode || !username) {
@@ -338,8 +362,8 @@ function GameContent() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <a href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-lg">
-                SD
+              <div className="text-3xl">
+                🌐
               </div>
               <span className="font-semibold text-lg">Orbit</span>
             </a>
@@ -773,15 +797,6 @@ function GameContent() {
                       roomCode={roomCode}
                       playerName={username}
                       opponentName={opponent || 'Opponent'}
-                    />
-                  )}
-                  
-                  {selectedGameMode === 'tennis' && (
-                    <TennisGame
-                      onGameEnd={handleGameEnd}
-                      isActive={gameStarted}
-                      socket={socket}
-                      roomCode={roomCode}
                     />
                   )}
                 </div>
