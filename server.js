@@ -178,6 +178,17 @@ io.on('connection', (socket) => {
     socket.to(roomCode).emit('opponent-tennis-scored', { score });
   });
 
+  // Pushup Battle - number selection
+  socket.on('pushup-number-selected', ({ roomCode, number, player }) => {
+    console.log(`${player} selected ${number} pushups in ${roomCode}`);
+    socket.to(roomCode).emit('opponent-pushup-number', { number });
+  });
+
+  // Pushup Battle - count updates
+  socket.on('pushup-count', ({ roomCode, count }) => {
+    socket.to(roomCode).emit('opponent-pushup-count', { count });
+  });
+
   // Update game state
   socket.on('game-update', ({ roomCode, type, data }) => {
     socket.to(roomCode).emit('opponent-update', { type, data });

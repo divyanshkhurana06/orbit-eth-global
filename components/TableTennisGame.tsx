@@ -30,7 +30,7 @@ export default function TableTennisGame({
   
   // Game refs
   const ballPosRef = useRef({ x: 640, y: 360 });
-  const speedRef = useRef({ x: 8, y: 8 });
+  const speedRef = useRef({ x: 9.2, y: 9.2 }); // Increased by 15% (8 * 1.15 = 9.2)
   const leftPaddleYRef = useRef(300);
   const rightPaddleYRef = useRef(300);
   const animationFrameRef = useRef<number | null>(null);
@@ -64,7 +64,7 @@ export default function TableTennisGame({
   const resetBall = () => {
     ballPosRef.current = { x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT / 2 };
     const direction = Math.random() > 0.5 ? 1 : -1;
-    speedRef.current = { x: 8 * direction, y: 8 * (Math.random() > 0.5 ? 1 : -1) };
+    speedRef.current = { x: 9.2 * direction, y: 9.2 * (Math.random() > 0.5 ? 1 : -1) }; // Increased by 15%
     console.log(`Ball reset! Speed: x=${speedRef.current.x}, y=${speedRef.current.y}`);
   };
 

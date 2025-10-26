@@ -22,21 +22,26 @@ const TennisGame = dynamic(() => import('@/components/TennisGame'), {
   loading: () => <div className="text-center p-8">Loading Tennis...</div>
 });
 
-const GAME_MODES = [
-  {
-    id: 'object-hunt',
-    name: 'Object Hunt',
-    description: 'Race to find and show items to your camera',
-    icon: '🔍',
-    difficulty: 'Easy',
-    rules: [
-      'A random object will be selected',
-      'Find the object as fast as possible',
-      'Show it clearly to your camera',
-      'First player to show the object wins!',
-      'Good lighting helps detection'
-    ]
-  },
+const PushupBattleGame = dynamic(() => import('@/components/PushupBattleGame'), {
+  ssr: false,
+  loading: () => <div className="text-center p-8">Loading Pushup Battle...</div>
+});
+
+  const GAME_MODES = [
+    {
+      id: 'pushup-battle',
+      name: 'Pushup Battle',
+      description: 'Race to complete pushups - real fitness challenge!',
+      icon: '💪',
+      difficulty: 'Hard',
+      rules: [
+        'Each player selects a goal (10-100 pushups)',
+        'Goal is the average of both selections',
+        'Do proper form pushups to count',
+        'Arms straight (160°) → Down (110°) → Up counts!',
+        'First to reach the goal wins!'
+      ]
+    },
   {
     id: 'rock-paper-scissors',
     name: 'Rock Paper Scissors',
@@ -737,13 +742,14 @@ function GameContent() {
               {/* Center: Game Screen (BIGGER) */}
               <div className="col-span-8 flex items-center justify-center">
                 <div className="w-full h-full bg-black/30 rounded-xl border-2 border-white/20 overflow-hidden">
-                  {selectedGameMode === 'object-hunt' && targetItem && (
-                    <ObjectBringGame
+                  {selectedGameMode === 'pushup-battle' && (
+                    <PushupBattleGame
                       onGameEnd={handleGameEnd}
                       isActive={gameStarted}
-                      targetItem={targetItem}
                       socket={socket}
                       roomCode={roomCode}
+                      playerName={username}
+                      opponentName={opponent || 'Opponent'}
                     />
                   )}
                   
