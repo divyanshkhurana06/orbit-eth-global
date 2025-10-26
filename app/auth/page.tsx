@@ -109,10 +109,9 @@ export default function AuthPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-block relative">
-            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-4xl shadow-2xl mx-auto mb-4">
-              O
+            <div className="text-7xl mb-4">
+              🌐
             </div>
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 blur-2xl opacity-50 animate-pulse"></div>
           </div>
           <h1 className="text-3xl font-bold mb-2">Welcome to Orbit</h1>
           <p className="text-slate-400">Let's get you started</p>
@@ -149,7 +148,7 @@ export default function AuthPage() {
               </p>
               
               <div className="space-y-4">
-                <WalletMultiButton className="!w-full !bg-gradient-to-r !from-blue-600 !to-purple-600 hover:!from-blue-700 hover:!to-purple-700 !rounded-xl !py-4 !font-bold !text-lg !transition" />
+                <WalletMultiButton className="!w-full !bg-gradient-to-r !from-cyan-600 !to-blue-600 hover:!from-cyan-700 hover:!to-blue-700 !rounded-xl !py-4 !font-bold !text-lg !transition" />
                 
                 {connected && publicKey && (
                   <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-sm">
@@ -236,7 +235,7 @@ export default function AuthPage() {
                 <button
                   onClick={handleCreateAccount}
                   disabled={!usernameAvailable || isCreatingUser}
-                  className="w-full px-6 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold text-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 font-bold text-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isCreatingUser ? 'Creating Account...' : 'Create Account'}
                 </button>

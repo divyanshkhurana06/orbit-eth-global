@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SkillDuels - Play. Compete. Earn.",
-  description: "1v1 camera-based skill games with crypto rewards",
+  title: "Orbit - Play. Compete. Win Crypto.",
+  description: "AI-powered 1v1 skill games with blockchain rewards",
 };
 
 export default function RootLayout({

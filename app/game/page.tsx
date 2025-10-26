@@ -3,20 +3,24 @@
 import { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { io, Socket } from 'socket.io-client';
+import dynamic from 'next/dynamic';
 import ObjectBringGame, { DETECTABLE_ITEMS } from '@/components/ObjectBringGame';
 import RockPaperScissorsGame from '@/components/RockPaperScissorsGame';
-import ReflexGame from '@/components/ReflexGame';
 import VideoChat from '@/components/VideoChat';
-import GameUI from '@/components/GameUI';
+import ChatBox from '@/components/ChatBox';
 import { MouseMoveEffect } from '@/components/MouseMoveEffect';
 
-// Dynamic import for HandRaiseGame (uses MediaPipe)
-const HandRaiseGame = dynamic(() => import('@/components/HandRaiseGame'), {
+// Dynamic imports for games using MediaPipe (client-side only)
+
+const TableTennisGame = dynamic(() => import('@/components/TableTennisGame'), {
   ssr: false,
-  loading: () => <div className="text-center p-8">Loading game...</div>
+  loading: () => <div className="text-center p-8">Loading Table Tennis...</div>
 });
 
-import dynamic from 'next/dynamic';
+const TennisGame = dynamic(() => import('@/components/TennisGame'), {
+  ssr: false,
+  loading: () => <div className="text-center p-8">Loading Tennis...</div>
+});
 
 const GAME_MODES = [
   {
@@ -24,28 +28,56 @@ const GAME_MODES = [
     name: 'Object Hunt',
     description: 'Race to find and show items to your camera',
     icon: '🔍',
-    difficulty: 'Easy'
-  },
-  {
-    id: 'hand-raise',
-    name: 'Hand Raise',
-    description: 'First to raise your hand when the signal appears',
-    icon: '✋',
-    difficulty: 'Easy'
+    difficulty: 'Easy',
+    rules: [
+      'A random object will be selected',
+      'Find the object as fast as possible',
+      'Show it clearly to your camera',
+      'First player to show the object wins!',
+      'Good lighting helps detection'
+    ]
   },
   {
     id: 'rock-paper-scissors',
     name: 'Rock Paper Scissors',
     description: 'Classic game with hand gesture detection',
     icon: '✊',
-    difficulty: 'Medium'
+    difficulty: 'Medium',
+    rules: [
+      '✊ Rock beats Scissors',
+      '✋ Paper beats Rock',
+      '✌️ Scissors beats Paper',
+      'Show your gesture clearly',
+      'First to lock in wins ties'
+    ]
   },
   {
-    id: 'reflex-challenge',
-    name: 'Reflex Challenge',
-    description: 'React fastest when the color changes',
-    icon: '⚡',
-    difficulty: 'Medium'
+    id: 'table-tennis',
+    name: 'Table Tennis',
+    description: 'Control paddle with hand movement, hit the ball!',
+    icon: '🏓',
+    difficulty: 'Medium',
+    rules: [
+      'Move hand left/right to control paddle',
+      'Hit the ball back to opponent',
+      'Ball speeds up with each hit',
+      'First to 5 points wins',
+      'Missing the ball gives opponent a point'
+    ]
+  },
+  {
+    id: 'tennis',
+    name: 'Tennis',
+    description: 'Swing your hand to hit tennis balls',
+    icon: '🎾',
+    difficulty: 'Hard',
+    rules: [
+      'Move hand to position racket',
+      'Swing down fast for power hits',
+      'Ball has gravity and bounce',
+      'First to 3 points wins',
+      'Let ball bounce once before hitting'
+    ]
   }
 ];
 
@@ -62,12 +94,15 @@ function GameContent() {
   const [wagerAmount, setWagerAmount] = useState(0.1);
   const [playerScore, setPlayerScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
-  const [gameState, setGameState] = useState<'waiting' | 'ready_room' | 'ready' | 'playing' | 'finished'>('waiting');
+  const [gameState, setGameState] = useState<'waiting' | 'ready_room' | 'rules_preview' | 'playing' | 'finished'>('waiting');
   const [isReady, setIsReady] = useState(false);
   const [opponentReady, setOpponentReady] = useState(false);
   const [targetItem, setTargetItem] = useState('');
   const [roundNumber, setRoundNumber] = useState(1);
   const [selectedGameMode, setSelectedGameMode] = useState('object-hunt');
+  const [rulesAccepted, setRulesAccepted] = useState(false);
+  const [opponentRulesAccepted, setOpponentRulesAccepted] = useState(false);
+  const [setupCountdown, setSetupCountdown] = useState<number | null>(null);
 
   // Socket.io connection
   useEffect(() => {
@@ -103,7 +138,8 @@ function GameContent() {
 
     newSocket.on('both-ready', (data) => {
       console.log('Both players ready');
-      setGameState('ready');
+      // Keep it in ready_room so the start button is visible
+      // setGameState('ready');
     });
 
     newSocket.on('game-mode-selected', (data) => {
@@ -111,11 +147,42 @@ function GameContent() {
       setSelectedGameMode(data.gameMode);
     });
 
+    newSocket.on('show-rules-screen', (data) => {
+      console.log('📋 RULES SCREEN EVENT RECEIVED');
+      console.log('Game mode:', data.gameMode);
+      console.log('Setting state to rules_preview for:', username);
+      
+      if (data.gameMode) {
+        setSelectedGameMode(data.gameMode);
+      }
+      setGameState('rules_preview');
+      
+      console.log('✅ Rules screen should now be visible');
+    });
+
+    newSocket.on('opponent-rules-accepted', (data) => {
+      console.log('✅ Opponent accepted rules:', data.username);
+      setOpponentRulesAccepted(true);
+    });
+
+    newSocket.on('countdown-started', () => {
+      console.log('⏱️ Countdown started');
+      setSetupCountdown(5);
+    });
+
     newSocket.on('game-started', (data) => {
-      console.log('Game started with item:', data.targetItem);
+      console.log('🎮 GAME STARTED EVENT RECEIVED:', data);
+      console.log('Target item:', data.targetItem);
+      console.log('Game mode:', data.gameMode);
+      
       setTargetItem(data.targetItem);
+      if (data.gameMode) {
+        setSelectedGameMode(data.gameMode);
+      }
       setGameStarted(true);
       setGameState('playing');
+      
+      console.log('✅ State updated - should render game now');
     });
 
     newSocket.on('score-update', (data) => {
@@ -171,12 +238,64 @@ function GameContent() {
   };
 
   const handleStartGame = () => {
-    if (!socket || !isReady || !opponentReady) return;
+    console.log('🚀 START GAME CLICKED - Moving to rules preview');
+    console.log('Socket connected?', socket?.connected);
+    console.log('Room code:', roomCode);
+    console.log('Game mode:', selectedGameMode);
+    console.log('Is ready?', isReady);
+    console.log('Opponent ready?', opponentReady);
     
-    const randomItem = DETECTABLE_ITEMS[Math.floor(Math.random() * DETECTABLE_ITEMS.length)];
+    if (!socket || !isReady || !opponentReady) {
+      console.log('❌ Cannot start - conditions not met');
+      return;
+    }
     
-    socket.emit('start-game', { roomCode, targetItem: randomItem, gameMode: selectedGameMode });
+    if (!socket.connected) {
+      console.log('❌ Socket is not connected!');
+      return;
+    }
+    
+    // Emit to server - server will broadcast to BOTH players (including host)
+    console.log('✅ Emitting show-rules to server...');
+    socket.emit('show-rules', { roomCode, gameMode: selectedGameMode });
+    console.log('✅ Emitted show-rules event');
   };
+
+  const handleAcceptRules = () => {
+    if (!socket) return;
+    setRulesAccepted(true);
+    socket.emit('rules-accepted', { roomCode, username });
+  };
+
+  const handleStartActualGame = () => {
+    if (!socket || !rulesAccepted || !opponentRulesAccepted) return;
+    
+    console.log('✅ Both players accepted rules - Starting countdown');
+    
+    // Start 5-second countdown for camera setup
+    setSetupCountdown(5);
+    socket.emit('start-countdown', { roomCode });
+  };
+
+  // Countdown effect for camera setup
+  useEffect(() => {
+    if (setupCountdown === null) return;
+    
+    if (setupCountdown > 0) {
+      const timer = setTimeout(() => {
+        setSetupCountdown(setupCountdown - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      // Countdown finished, start the game
+      if (socket) {
+        const randomItem = DETECTABLE_ITEMS[Math.floor(Math.random() * DETECTABLE_ITEMS.length)];
+        console.log('🎮 Countdown complete - Starting game now');
+        socket.emit('start-game', { roomCode, targetItem: randomItem, gameMode: selectedGameMode });
+      }
+      setSetupCountdown(null);
+    }
+  }, [setupCountdown, socket, roomCode, selectedGameMode]);
 
   const handleGameEnd = (winner: 'player' | 'opponent', myTime: number, opponentTime: number) => {
     if (!socket) return;
@@ -217,7 +336,7 @@ function GameContent() {
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-lg">
                 SD
               </div>
-              <span className="font-semibold text-lg">SkillDuels</span>
+              <span className="font-semibold text-lg">Orbit</span>
             </a>
             <div className="h-6 w-px bg-slate-700"></div>
             <div>
@@ -432,51 +551,250 @@ function GameContent() {
           </div>
         )}
 
-        {/* Playing */}
-        {gameState === 'playing' && gameStarted && socket && (
-          <div className="grid lg:grid-cols-2 gap-6">
-            <div>
-              {selectedGameMode === 'object-hunt' && targetItem && (
-                <ObjectBringGame
-                  onGameEnd={handleGameEnd}
-                  isActive={gameStarted}
-                  targetItem={targetItem}
-                  socket={socket}
-                  roomCode={roomCode}
-                />
-              )}
-              
-              {selectedGameMode === 'hand-raise' && (
-                <HandRaiseGame
-                  onGameEnd={(winner) => handleGameEnd(winner, 0, 0)}
-                  isActive={gameStarted}
-                />
-              )}
-              
-              {selectedGameMode === 'rock-paper-scissors' && (
-                <RockPaperScissorsGame
-                  onGameEnd={(winner, playerChoice, opponentChoice) => {
-                    console.log(`RPS Result: ${winner}, Player: ${playerChoice}, Opponent: ${opponentChoice}`);
-                    handleGameEnd(winner === 'tie' ? 'player' : winner, 0, 0);
-                  }}
-                  isActive={gameStarted}
-                  socket={socket}
-                  roomCode={roomCode}
-                />
-              )}
-              
-              {selectedGameMode === 'reflex-challenge' && (
-                <ReflexGame
-                  onGameEnd={handleGameEnd}
-                  isActive={gameStarted}
-                  socket={socket}
-                  roomCode={roomCode}
-                />
+        {/* Rules Preview & Consent Screen */}
+        {gameState === 'rules_preview' && (
+          <div className="max-w-4xl mx-auto py-8">
+            <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-8 border-2 border-blue-500 shadow-2xl">
+              {/* Header */}
+              <div className="text-center mb-8">
+                <div className="text-6xl mb-4">
+                  {GAME_MODES.find(m => m.id === selectedGameMode)?.icon}
+                </div>
+                <h2 className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text mb-2">
+                  {GAME_MODES.find(m => m.id === selectedGameMode)?.name}
+                </h2>
+                <p className="text-slate-400 text-lg">
+                  {GAME_MODES.find(m => m.id === selectedGameMode)?.description}
+                </p>
+              </div>
+
+              {/* Game Rules */}
+              <div className="bg-slate-900/50 rounded-2xl p-6 mb-8 border border-slate-700">
+                <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                  <span className="text-yellow-400">📋</span>
+                  Game Rules
+                </h3>
+                <ul className="space-y-3">
+                  {GAME_MODES.find(m => m.id === selectedGameMode)?.rules?.map((rule, index) => (
+                    <li key={index} className="flex items-start gap-3 text-lg">
+                      <span className="text-green-400 font-bold mt-1">{index + 1}.</span>
+                      <span className="text-slate-200">{rule}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Wager Info */}
+              <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-2xl p-6 mb-8">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-sm text-yellow-500/80 mb-1">Total Pot</div>
+                    <div className="text-3xl font-bold text-yellow-400">{wagerAmount * 2} SOL</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm text-slate-400 mb-1">Your Wager</div>
+                    <div className="text-xl font-semibold text-white">{wagerAmount} SOL</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm text-slate-400 mb-1">Winner Gets</div>
+                    <div className="text-xl font-semibold text-green-400">{wagerAmount * 2} SOL</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Players Status */}
+              <div className="grid md:grid-cols-2 gap-4 mb-8">
+                <div className={`p-4 rounded-xl border-2 transition ${
+                  rulesAccepted 
+                    ? 'border-green-500 bg-green-500/10' 
+                    : 'border-slate-700 bg-slate-800/30'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-bold">{username}</div>
+                      <div className="text-sm text-slate-400">You</div>
+                    </div>
+                    {rulesAccepted ? (
+                      <div className="text-2xl">✅</div>
+                    ) : (
+                      <div className="text-2xl">⏳</div>
+                    )}
+                  </div>
+                </div>
+
+                <div className={`p-4 rounded-xl border-2 transition ${
+                  opponentRulesAccepted 
+                    ? 'border-green-500 bg-green-500/10' 
+                    : 'border-slate-700 bg-slate-800/30'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-bold">{opponent}</div>
+                      <div className="text-sm text-slate-400">Opponent</div>
+                    </div>
+                    {opponentRulesAccepted ? (
+                      <div className="text-2xl">✅</div>
+                    ) : (
+                      <div className="text-2xl">⏳</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Consent & Start Button */}
+              {!rulesAccepted ? (
+                <div className="text-center">
+                  <button
+                    onClick={handleAcceptRules}
+                    className="px-12 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl font-bold text-xl transition transform hover:scale-105 shadow-lg"
+                  >
+                    ✅ I Accept the Rules & Wager
+                  </button>
+                  <p className="text-sm text-slate-400 mt-3">
+                    By accepting, you agree to wager {wagerAmount} SOL
+                  </p>
+                </div>
+              ) : !opponentRulesAccepted ? (
+                <div className="text-center">
+                  <div className="text-green-400 text-lg font-semibold mb-2">✅ You're ready!</div>
+                  <div className="text-slate-400">Waiting for {opponent} to accept...</div>
+                </div>
+              ) : setupCountdown !== null ? (
+                <div className="text-center">
+                  <div className="text-8xl font-bold mb-4 animate-pulse">
+                    {setupCountdown > 0 ? setupCountdown : '🎮'}
+                  </div>
+                  <div className="text-2xl font-semibold mb-2">
+                    {setupCountdown > 0 ? 'Get Ready!' : 'Starting...'}
+                  </div>
+                  <div className="text-slate-400">
+                    {setupCountdown > 0 ? 'Position your camera and prepare!' : 'Game is starting now!'}
+                  </div>
+                </div>
+              ) : isHost ? (
+                <div className="text-center">
+                  <button
+                    onClick={handleStartActualGame}
+                    className="px-12 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl font-bold text-xl transition transform hover:scale-105 shadow-lg animate-pulse"
+                  >
+                    🎮 START GAME NOW!
+                  </button>
+                  <p className="text-sm text-green-400 mt-3">
+                    Both players ready - Click to start!
+                  </p>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <div className="text-green-400 text-lg font-semibold mb-2">✅ Both players ready!</div>
+                  <div className="text-slate-400">Waiting for host to start the game...</div>
+                </div>
               )}
             </div>
-            <div className="space-y-6">
-              <VideoChat roomCode={roomCode} username={username} />
-              <GameUI socket={socket} roomCode={roomCode} />
+          </div>
+        )}
+
+        {/* Debug Info */}
+        <div className="fixed top-4 right-4 bg-black/80 p-4 rounded text-xs z-50">
+          <div>Game State: <span className="text-yellow-400">{gameState}</span></div>
+          <div>Game Started: <span className="text-yellow-400">{gameStarted ? 'Yes' : 'No'}</span></div>
+          <div>Socket: <span className="text-yellow-400">{socket ? 'Connected' : 'No'}</span></div>
+          <div>Selected Mode: <span className="text-yellow-400">{selectedGameMode}</span></div>
+        </div>
+
+        {/* Playing - Clean 3-Column Layout */}
+        {gameState === 'playing' && gameStarted && socket && (
+          <div className="w-full min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4">
+            {/* Top: Score Bar */}
+            <div className="w-full mb-4 flex justify-between items-center bg-black/50 rounded-xl p-4 backdrop-blur max-w-7xl mx-auto">
+              <div className="text-center flex-1">
+                <div className="text-sm text-green-400">YOU</div>
+                <div className="text-4xl font-bold text-white">{playerScore}</div>
+              </div>
+              <div className="text-center flex-1">
+                <div className="text-2xl font-bold text-yellow-400">
+                  {GAME_MODES.find(m => m.id === selectedGameMode)?.icon} {GAME_MODES.find(m => m.id === selectedGameMode)?.name}
+                </div>
+                <div className="text-sm text-slate-300">First to win!</div>
+              </div>
+              <div className="text-center flex-1">
+                <div className="text-sm text-red-400">OPPONENT</div>
+                <div className="text-4xl font-bold text-white">{opponentScore}</div>
+              </div>
+            </div>
+
+            {/* Middle: 3-Column Layout (Video | Game | Video) */}
+            <div className="grid grid-cols-12 gap-4 max-w-7xl mx-auto mb-4">
+              {/* Left: Your Video */}
+              <div className="col-span-2">
+                <div className="bg-slate-900/80 rounded-xl overflow-hidden border-2 border-green-500 h-full">
+                  <div className="bg-green-600 text-white text-center py-2 text-sm font-semibold">
+                    YOU
+                  </div>
+                  <VideoChat roomCode={roomCode} username={username} showOnlyLocal={true} />
+                </div>
+              </div>
+
+              {/* Center: Game Screen (BIGGER) */}
+              <div className="col-span-8 flex items-center justify-center">
+                <div className="w-full h-full bg-black/30 rounded-xl border-2 border-white/20 overflow-hidden">
+                  {selectedGameMode === 'object-hunt' && targetItem && (
+                    <ObjectBringGame
+                      onGameEnd={handleGameEnd}
+                      isActive={gameStarted}
+                      targetItem={targetItem}
+                      socket={socket}
+                      roomCode={roomCode}
+                    />
+                  )}
+                  
+                  {selectedGameMode === 'rock-paper-scissors' && (
+                    <RockPaperScissorsGame
+                      onGameEnd={(winner, playerChoice, opponentChoice) => {
+                        console.log(`RPS Result: ${winner}, Player: ${playerChoice}, Opponent: ${opponentChoice}`);
+                        handleGameEnd(winner === 'tie' ? 'player' : winner, 0, 0);
+                      }}
+                      isActive={gameStarted}
+                      socket={socket}
+                      roomCode={roomCode}
+                    />
+                  )}
+                  
+                  {selectedGameMode === 'table-tennis' && (
+                    <TableTennisGame
+                      onGameEnd={handleGameEnd}
+                      isActive={gameStarted}
+                      socket={socket}
+                      roomCode={roomCode}
+                      playerName={username}
+                      opponentName={opponent || 'Opponent'}
+                    />
+                  )}
+                  
+                  {selectedGameMode === 'tennis' && (
+                    <TennisGame
+                      onGameEnd={handleGameEnd}
+                      isActive={gameStarted}
+                      socket={socket}
+                      roomCode={roomCode}
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* Right: Opponent Video */}
+              <div className="col-span-2">
+                <div className="bg-slate-900/80 rounded-xl overflow-hidden border-2 border-red-500 h-full">
+                  <div className="bg-red-600 text-white text-center py-2 text-sm font-semibold">
+                    {opponent || 'OPPONENT'}
+                  </div>
+                  <VideoChat roomCode={roomCode} username={username} showOnlyRemote={true} />
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom: Chat */}
+            <div className="max-w-7xl mx-auto">
+              <ChatBox socket={socket} roomCode={roomCode} username={username} />
             </div>
           </div>
         )}

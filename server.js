@@ -93,6 +93,35 @@ io.on('connection', (socket) => {
     });
   });
 
+  // Show rules screen
+  socket.on('show-rules', ({ roomCode, gameMode }) => {
+    console.log(`📋 SERVER: Showing rules for ${gameMode} in room ${roomCode}`);
+    console.log(`📋 SERVER: Broadcasting to all clients in room`);
+    
+    // Broadcast to ALL clients in the room (including sender)
+    io.to(roomCode).emit('show-rules-screen', { gameMode });
+    
+    console.log(`📋 SERVER: Emitted show-rules-screen event`);
+  });
+
+  // Rules accepted
+  socket.on('rules-accepted', ({ roomCode, username }) => {
+    console.log(`${username} accepted rules in ${roomCode}`);
+    socket.to(roomCode).emit('opponent-rules-accepted', { username });
+  });
+
+  // Start countdown for camera setup
+  socket.on('start-countdown', ({ roomCode }) => {
+    console.log(`⏱️ Starting countdown in ${roomCode}`);
+    io.to(roomCode).emit('countdown-started');
+  });
+
+  // Chat messages
+  socket.on('chat-message', ({ roomCode, message }) => {
+    console.log(`💬 Chat in ${roomCode} from ${message.username}: ${message.text}`);
+    socket.to(roomCode).emit('chat-message', message);
+  });
+
   // Start game
   socket.on('start-game', ({ roomCode, targetItem, gameMode }) => {
     const room = rooms.get(roomCode);
@@ -121,6 +150,32 @@ io.on('connection', (socket) => {
   socket.on('reflex-time', ({ roomCode, time }) => {
     console.log(`Reflex time in ${roomCode}: ${time}ms`);
     socket.to(roomCode).emit('reflex-opponent-time', { time });
+  });
+
+  // Table Tennis paddle movement
+  socket.on('paddle-move', ({ roomCode, x, y, side }) => {
+    socket.to(roomCode).emit('opponent-paddle-move', { x, y, side });
+  });
+
+  // Table Tennis serve ball
+  socket.on('serve-ball', ({ roomCode, server }) => {
+    console.log(`🎾 ${server} serving in ${roomCode}`);
+    socket.to(roomCode).emit('opponent-serve-ball', { server });
+  });
+
+  // Table Tennis scoring
+  socket.on('scored', ({ roomCode, score }) => {
+    socket.to(roomCode).emit('opponent-scored', { score });
+  });
+
+  // Tennis hand movement
+  socket.on('tennis-hand-move', ({ roomCode, x, y, swinging }) => {
+    socket.to(roomCode).emit('opponent-tennis-hand-move', { x, y, swinging });
+  });
+
+  // Tennis scoring
+  socket.on('tennis-scored', ({ roomCode, score }) => {
+    socket.to(roomCode).emit('opponent-tennis-scored', { score });
   });
 
   // Update game state

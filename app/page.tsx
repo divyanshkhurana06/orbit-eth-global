@@ -37,21 +37,18 @@ export default function LandingPage() {
       }`}>
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-xl shadow-lg">
-                O
+            <div className="flex items-center gap-2">
+              <div className="text-4xl">🌐</div>
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight">Orbit</h1>
+                <p className="text-xs text-slate-400">Competitive Gaming</p>
               </div>
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 blur-lg opacity-50 animate-pulse"></div>
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold">Orbit</h1>
-              <p className="text-xs text-slate-400">Competitive Gaming Platform</p>
             </div>
           </div>
           
           <button
             onClick={handleGetStarted}
-            className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-semibold transition transform hover:scale-105"
+            className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 font-semibold transition transform hover:scale-105"
           >
             Get Started
           </button>
@@ -65,7 +62,7 @@ export default function LandingPage() {
             <div className="inline-block mb-6 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-sm text-blue-400">
               🚀 Now in Beta
             </div>
-            <h2 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 text-transparent bg-clip-text">
+            <h2 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 text-transparent bg-clip-text">
               Compete. Win. Earn.
             </h2>
             <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto">
@@ -74,7 +71,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={handleGetStarted}
-                className="px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold text-lg transition transform hover:scale-105"
+                className="px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 font-bold text-lg transition transform hover:scale-105"
               >
                 Start Playing Now
               </button>
@@ -197,7 +194,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 bg-gradient-to-r from-blue-900/20 to-purple-900/20">
+      <section className="py-20 px-6 bg-gradient-to-r from-cyan-900/20 to-blue-900/20">
         <div className="max-w-4xl mx-auto text-center">
           <h3 className="text-4xl md:text-5xl font-bold mb-6">Ready to Start Winning?</h3>
           <p className="text-xl text-slate-300 mb-8">
@@ -205,7 +202,7 @@ export default function LandingPage() {
           </p>
           <button
             onClick={handleGetStarted}
-            className="px-12 py-5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold text-xl transition transform hover:scale-105 shadow-2xl"
+            className="px-12 py-5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 font-bold text-xl transition transform hover:scale-105 shadow-2xl"
           >
             Get Started Now
           </button>
@@ -221,8 +218,8 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold">
-                  O
+                <div className="text-3xl">
+                  🌐
                 </div>
                 <span className="text-xl font-bold">Orbit</span>
               </div>

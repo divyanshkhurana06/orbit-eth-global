@@ -81,12 +81,12 @@ export default function Lobby() {
       <header className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-xl shadow-lg">
-              O
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold">Orbit</h1>
-              <p className="text-xs text-slate-400">Competitive Gaming Platform</p>
+            <div className="flex items-center gap-2">
+              <div className="text-3xl">🌐</div>
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight">Orbit</h1>
+                <p className="text-xs text-slate-400">Competitive Gaming</p>
+              </div>
             </div>
           </div>
           
@@ -99,7 +99,7 @@ export default function Lobby() {
 
           <div className="flex items-center gap-3">
             <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-slate-800/50 border border-slate-700 rounded-lg">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-sm">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-600 to-blue-600 flex items-center justify-center font-bold text-sm">
                 {user.username.charAt(0).toUpperCase()}
               </div>
               <span className="text-sm font-semibold">{user.username}</span>
@@ -127,7 +127,7 @@ export default function Lobby() {
       {/* Hero Section */}
       <main className="max-w-7xl mx-auto px-6 py-12">
         <div className="text-center mb-12">
-          <h2 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 text-transparent bg-clip-text">
+          <h2 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 text-transparent bg-clip-text">
             Compete. Win. Earn.
           </h2>
           <p className="text-xl text-slate-400">
@@ -159,7 +159,7 @@ export default function Lobby() {
             <div className="grid md:grid-cols-2 gap-4">
               <button
                 onClick={handleCreateRoom}
-                className="px-6 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold transition transform hover:scale-105 flex items-center justify-center gap-2"
+                className="px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 font-bold transition transform hover:scale-105 flex items-center justify-center gap-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -252,8 +252,8 @@ export default function Lobby() {
           </div>
 
           <div className="p-6 bg-slate-800/30 border border-slate-700 rounded-xl">
-            <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-purple-500/10 flex items-center justify-center">
-              <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-cyan-500/10 flex items-center justify-center">
+              <svg className="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
@@ -311,7 +311,7 @@ export default function Lobby() {
 
               <button
                 onClick={handleJoinRoom}
-                className="w-full px-6 py-4 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 font-bold transition"
+                className="w-full px-6 py-4 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 font-bold transition"
               >
                 Join Game
               </button>

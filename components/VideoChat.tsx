@@ -5,9 +5,11 @@ import { useEffect, useRef, useState } from 'react';
 interface VideoChatProps {
   roomCode: string;
   username: string;
+  showOnlyLocal?: boolean;
+  showOnlyRemote?: boolean;
 }
 
-export default function VideoChat({ roomCode, username }: VideoChatProps) {
+export default function VideoChat({ roomCode, username, showOnlyLocal, showOnlyRemote }: VideoChatProps) {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(false);
@@ -81,30 +83,98 @@ export default function VideoChat({ roomCode, username }: VideoChatProps) {
     }
   };
 
-  return (
-    <div className="bg-black/50 backdrop-blur-lg rounded-2xl p-6 border border-blue-500/30">
-      <div className="mb-4">
-        <h2 className="text-xl font-bold">🎥 Video Chat</h2>
+  // Show only local video (for left column)
+  if (showOnlyLocal) {
+    return (
+      <div className="relative w-full aspect-[3/4]">
+        <video
+          ref={localVideoRef}
+          autoPlay
+          playsInline
+          muted
+          className="w-full h-full object-cover"
+        />
+        {isVideoOff && (
+          <div className="absolute inset-0 flex items-center justify-center bg-slate-900">
+            <div className="text-6xl">📷</div>
+          </div>
+        )}
+        <div className="absolute bottom-2 left-2 right-2 flex gap-2 justify-center">
+          <button
+            onClick={toggleMute}
+            className={`p-2 rounded-full transition ${
+              isMuted ? 'bg-red-600' : 'bg-black/70 hover:bg-black/90'
+            }`}
+          >
+            {isMuted ? '🔇' : '🔊'}
+          </button>
+          <button
+            onClick={toggleVideo}
+            className={`p-2 rounded-full transition ${
+              isVideoOff ? 'bg-red-600' : 'bg-black/70 hover:bg-black/90'
+            }`}
+          >
+            {isVideoOff ? '📷' : '📹'}
+          </button>
+        </div>
       </div>
+    );
+  }
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
+  // Show only remote video (for right column)
+  if (showOnlyRemote) {
+    return (
+      <div className="relative w-full aspect-[3/4]">
+        <video
+          ref={remoteVideoRef}
+          autoPlay
+          playsInline
+          className="w-full h-full object-cover"
+        />
+        {!isConnected && (
+          <div className="absolute inset-0 flex items-center justify-center bg-slate-900">
+            <div className="text-center">
+              <div className="text-4xl mb-2 animate-pulse">⏳</div>
+              <div className="text-xs text-slate-400">Connecting...</div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Default: Show both videos side by side (for lobby/waiting room)
+  return (
+    <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+      <h3 className="text-lg font-semibold mb-4">Video Chat</h3>
+      
+      <div className="grid grid-cols-2 gap-4">
         {/* Local Video */}
         <div className="relative">
           <video
             ref={localVideoRef}
             autoPlay
-            muted
             playsInline
-            className="w-full rounded-lg bg-gray-900 border-2 border-green-500/50"
+            muted
+            className="w-full rounded-lg bg-slate-900 aspect-video object-cover"
           />
-          <div className="absolute bottom-2 left-2 px-2 py-1 bg-black/70 rounded text-xs">
-            You
+          <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 rounded text-sm">
+            {username} (You)
           </div>
-          {isVideoOff && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-900 rounded-lg">
-              <div className="text-4xl">📷</div>
-            </div>
-          )}
+          <div className="absolute top-2 right-2 flex gap-2">
+            <button
+              onClick={toggleMute}
+              className="bg-black bg-opacity-50 p-2 rounded-full hover:bg-opacity-70 transition"
+            >
+              {isMuted ? '🔇' : '🔊'}
+            </button>
+            <button
+              onClick={toggleVideo}
+              className="bg-black bg-opacity-50 p-2 rounded-full hover:bg-opacity-70 transition"
+            >
+              {isVideoOff ? '📹' : '📷'}
+            </button>
+          </div>
         </div>
 
         {/* Remote Video */}
@@ -113,46 +183,20 @@ export default function VideoChat({ roomCode, username }: VideoChatProps) {
             ref={remoteVideoRef}
             autoPlay
             playsInline
-            className="w-full rounded-lg bg-gray-900 border-2 border-red-500/50"
+            className="w-full rounded-lg bg-slate-900 aspect-video object-cover"
           />
-          <div className="absolute bottom-2 left-2 px-2 py-1 bg-black/70 rounded text-xs">
-            Opponent
-          </div>
           {!isConnected && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-900 rounded-lg">
-              <div className="text-center">
-                <div className="text-3xl mb-2 animate-pulse">⏳</div>
-                <div className="text-xs text-gray-400">Connecting...</div>
-              </div>
+            <div className="absolute inset-0 flex items-center justify-center bg-slate-900 rounded-lg">
+              <p className="text-slate-400">Waiting for opponent...</p>
+            </div>
+          )}
+          {isConnected && (
+            <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 px-2 py-1 rounded text-sm">
+              Opponent
             </div>
           )}
         </div>
       </div>
-
-      {/* Controls */}
-      <div className="flex gap-3 justify-center">
-        <button
-          onClick={toggleMute}
-          className={`px-4 py-2 rounded-lg font-bold transition ${
-            isMuted
-              ? 'bg-red-600 hover:bg-red-700'
-              : 'bg-gray-700 hover:bg-gray-600'
-          }`}
-        >
-          {isMuted ? '🔇' : '🎤'}
-        </button>
-        <button
-          onClick={toggleVideo}
-          className={`px-4 py-2 rounded-lg font-bold transition ${
-            isVideoOff
-              ? 'bg-red-600 hover:bg-red-700'
-              : 'bg-gray-700 hover:bg-gray-600'
-          }`}
-        >
-          {isVideoOff ? '📷' : '📹'}
-        </button>
-      </div>
     </div>
   );
 }
-
